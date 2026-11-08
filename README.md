@@ -77,17 +77,19 @@ The editor displays artwork in the same proportions used by the hardware.
 An SG24 byte contains two horizontally adjacent cells that share a color:
 
 ```text
-1 N2 N1 N0 P0 P1 X X
-↑      ↑      ↑  ↑
-MSB    chroma L  R
+1 N2 N1 N0 UL UR LL LR
+↑  chroma   ↑ top six / bottom six
+MSB
 ```
 
 Where:
 
 - Bit 7 identifies the byte as a semigraphics byte.
 - N2–N0 select one of eight chroma colors.
-- P0 and P1 determine the left and right cell states.
-- X bits are unused.
+- UL and UR (bits 3 and 2) are the left and right cells on scanlines 0–5 of each 12-line character cell.
+- LL and LR (bits 1 and 0) are the left and right cells on scanlines 6–11.
+
+Bits 1–0 are **not** unused. The VDG is still in SG4 and draws a 12-scanline cell, so a byte that sets only bits 3–2 leaves the bottom half of every cell black. SG24 Studio writes the same pair into both halves: a lit left cell is bit 3 plus bit 1 (`$0A`), a lit right cell is bit 2 plus bit 0 (`$05`). Code that writes SG24 bytes at run time, such as sprite blitters, must do the same.
 
 Because two neighboring cells share the same chroma, cells can only differ in color when a byte boundary falls between them. SG24 Studio automatically resolves these hardware constraints while drawing.
 
