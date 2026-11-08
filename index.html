@@ -1324,9 +1324,9 @@ table.keys th{text-align:left;padding:12px 8px 5px;font-size:10.5px;letter-spaci
     <p style="margin-top:0">Semigraphics 24 gives the MC6847 a 64&times;192 grid of
       cells, each <b>4 screen pixels wide by one scanline tall</b>. That is the 4:1
       shape this editor draws by default.</p>
-    <div class="phos" style="margin:14px 0">1 N2 N1 N0 P0 P1 X X
-<span class="lb">&uarr;      &uarr;      &uarr;  &uarr;  &uarr;</span>
-<span class="lb">MSB    chroma  L  R  unused</span></div>
+    <div class="phos" style="margin:14px 0">1 N2 N1 N0 UL UR LL LR
+<span class="lb">&uarr;      &uarr;      &uarr;  &uarr;  &uarr;  &uarr;</span>
+<span class="lb">MSB    chroma  top six  bottom six</span></div>
     <p>One byte carries two horizontally adjacent cells and a single three-bit chroma
       that both share. Two neighbours can be different colours only if a byte boundary
       falls between them &mdash; which is why columns pair 0+1, 2+3, and why this editor
@@ -1677,9 +1677,13 @@ function region(){
 const docBytes=()=>{const z=size();return z.w/2*z.h;};
 const oversize=()=>{const z=size();return z.w>FULLW||z.h>FULLH;};
 
-/* SG24 byte: 1 N2 N1 N0 P0 P1 X X. Bits 1-0 are unused by the VDG; the
-   encoder mirrors bits 3-2 into them, which is harmless and makes the byte
-   readable at a glance in a hex dump.
+/* SG24 byte: 1 N2 N1 N0 UL UR LL LR. The VDG is still in SG4 and draws a
+   twelve-scanline cell: scanlines 0-5 of each cell use bits 3-2 (upper left,
+   upper right) and scanlines 6-11 use bits 1-0 (lower left, lower right).
+   Bits 1-0 are NOT unused. A byte with only bits 3-2 set shows its artwork on
+   half the scanlines and leaves the rest black. Every cell here is one
+   scanline tall, so the encoder writes the same pair into both halves: left
+   cell = bits 3 and 1 ($0A), right cell = bits 2 and 0 ($05).
 
    The empty byte is the subtle one. Bit 7 is what tells the VDG that a byte
    is a graphics group at all -- with it clear the same byte renders as a
@@ -4202,7 +4206,10 @@ function toAsm(){
   const style=asmStyle(), blank=expBlank(), items=asmItems();
   const per=clamp((S.exp.perLine|0)||32,1,64);
   let s=`; ${S.name} -- SG24 Studio, ${MODENAME[S.mode].toLowerCase()}\n`
-   +"; byte: 1 N2 N1 N0 P0 P1 X X   (bits 1-0 are unused by the VDG)\n"
+   +"; byte: 1 N2 N1 N0 UL UR LL LR   left cell = bits 3,1; right cell = bits 2,0\n"
+   +"; The VDG shows bits 3-2 on scanlines 0-5 of each 12-line cell and bits 1-0 on\n"
+   +"; scanlines 6-11, so both pairs must carry the same pixels. A blitter that\n"
+   +"; writes only bits 3-2 leaves the bottom half of every cell black.\n"
    +"; EVERY byte needs bit 7 set, or the VDG reads it as a text character.\n"
    +`; empty cells emit ${HX(blank)}`
    +(blank===0?"   <-- only safe where a blitter skips them\n":"   (opaque black)\n");
