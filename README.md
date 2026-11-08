@@ -4,6 +4,8 @@ SG24 Studio is a browser-based graphics editor for creating artwork, screens, sp
 
 Unlike generic pixel editors, SG24 Studio understands the hardware rules of the MC6847 and the memory layout required by SG24. Every editing operation respects the format's restrictions so artwork can be exported directly for use on real hardware and emulators.
 
+![SG24 Studio Screen Editor showing a sunflower converted to SG24 artwork](screenshots/screen-editor-sunflower.png)
+
 ## Features
 
 ### Screen Editor
@@ -147,3 +149,20 @@ SG24 Studio is designed around a simple idea:
 Instead of forcing users to think in terms of byte pairs, chroma sharing, and display quirks, the editor automatically enforces SG24 rules while preserving complete control over the final image.
 
 The result is artwork that looks correct, exports cleanly, and remains faithful to the capabilities of the original hardware.
+
+## Gallery
+
+<table>
+  <tr>
+    <td width="50%"><img src="screenshots/screen-editor-mountains.png" alt="Mountain landscape in the Screen Editor with the Move tool active"><br><sub>Landscape artwork with the byte grid and Move tool, which snaps to whole bytes.</sub></td>
+    <td width="50%"><img src="screenshots/view-menu-guides.png" alt="The View menu with zoom, grid, onion skin, guide and text-byte colour set options"><br><sub>View menu: grids, onion skin, horizontal guides and text-byte colour sets.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="screenshots/screen-menu.png" alt="The Screen menu with canvas, layer and screen options over imported artwork"><br><sub>Screen menu: canvas size, layers, multiple screens and sending art to the sheet.</sub></td>
+    <td width="50%"><img src="screenshots/gradient-fox.png" alt="Fox artwork with the gradient panel open in the sidebar"><br><sub>Gradient fills with scanline blending, tuned for SG24.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="screenshots/view-menu-poster.png" alt="Poster artwork with the View menu open"><br><sub>Imported poster artwork quantized to the SG24 palette.</sub></td>
+    <td width="50%"><img src="screenshots/selection-tool.png" alt="Portrait artwork with the selection tool and Add selection to sheet button"><br><sub>Selection tool for sending regions of a screen to the Sheet Editor.</sub></td>
+  </tr>
+</table>
